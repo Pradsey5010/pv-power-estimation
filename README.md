@@ -36,9 +36,21 @@ The output is a plot showing hourly estimated DC power output over one year:
 
 ---
 
-## ▶How to Run
+## How to Run
 
 1. **Clone this repo**:
    ```bash
    git clone https://github.com/yourusername/pv-power-estimation.git
    cd pv-power-estimation
+
+## License
+
+This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
+
+## Author
+
+**Pradyumna Mandawkar**  
+Master’s Student, Information Technology – Arizona State University  
+🔗 GitHub: [Pradsey5010](https://github.com/Pradsey5010)  
+🔗 LinkedIn: [linkedin.com/in/pradyumna-mandawkar-832921239](https://www.linkedin.com/in/pradyumna-mandawkar-832921239)
+
