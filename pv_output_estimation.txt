@@ -1,0 +1,57 @@
+import pandas as pd
+import matplotlib
+matplotlib.use('Agg')  # Use non-GUI backend to save the plot
+import matplotlib.pyplot as plt
+from pvlib.pvsystem import pvwatts_dc
+from pvlib.location import Location
+from pvlib.iotools import get_pvgis_tmy
+
+# Step 1: Set ASU PRL coordinates
+latitude = 33.4212
+longitude = -111.9330
+
+# Step 2: Create a location object
+site = Location(latitude, longitude)
+
+# Step 3: Get TMY (Typical Meteorological Year) weather data
+tmy_data, metadata = get_pvgis_tmy(latitude, longitude, outputformat='json')[0:2]
+
+print("✅ Step 3: Weather data downloaded")
+print(tmy_data.head())
+
+# Replace time index with a datetime range for 2024 (1 year, hourly)
+tmy_data.index = pd.date_range(start='2024-01-01 00:00:00', periods=len(tmy_data), freq='H')
+
+# Step 4: Extract POA irradiance and temperature
+poa_irradiance = tmy_data['ghi']        # Global horizontal irradiance (W/m^2)
+temp_air = tmy_data['temp_air']         # Air temperature (°C)
+
+print("✅ Step 4: Extracted irradiance and temperature")
+print(poa_irradiance.head())
+print(temp_air.head())
+
+# Step 5: Define PV system characteristics
+pdc0 = 5000           # 5 kW system
+gamma_pdc = -0.003    # Power temperature coefficient
+
+print("✅ Step 5: PV system parameters set")
+
+# Step 6: Calculate DC power output using PVWatts model
+dc_power = pvwatts_dc(poa_irradiance, temp_air, pdc0, gamma_pdc)
+
+print("✅ Step 6: DC power calculated")
+print(dc_power.head())
+
+# Step 7: Save the plot instead of showing it
+plt.figure(figsize=(12, 5))
+dc_power.plot()
+plt.title('Estimated DC Power Output (W) Over One Year at ASU PRL')
+plt.xlabel('Time')
+plt.ylabel('Power Output (W)')
+plt.grid(True)
+plt.tight_layout()
+
+# Save the figure to a file
+plt.savefig('dc_power_output.png')
+
+print("✅ Step 7: Plot saved as 'dc_power_output.png'")
